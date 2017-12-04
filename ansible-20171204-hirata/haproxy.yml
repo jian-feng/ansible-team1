@@ -1,0 +1,7 @@
+- name: deploy HA Proxy Server
+  hosts: haproxy
+  become: yes
+  roles:
+    - common
+    - haproxy
+

@@ -1,0 +1,7 @@
+- name: deploy App Server
+  hosts: app1,app2
+  become: yes
+  roles:
+    - common
+    - app
+
