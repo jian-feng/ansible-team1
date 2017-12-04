@@ -4,11 +4,6 @@
   become: true
 
   tasks:
-
-  - name: http
-    package:
-      name: httpie
-      state: latest
       
   - name: install HAProxy
     yum:
@@ -19,7 +14,7 @@
       name: haproxy
       state: started
 
-  - name: configure haproxy
+  - name: configure HAProxy
     template:
       src: ./haproxy.cfg.j2
       dest: /etc/haproxy/haproxy.cfg

@@ -3,8 +3,10 @@ team1 playbook for ansible advanced training
 
 ## Prepare to run 
 
-### 1. install [geerlingguy.postgresql](https://galaxy.ansible.com/geerlingguy/postgresql)
- role by `ansible-galaxy install geerlingguy.postgresql`
+### 1. install [geerlingguy.postgresql](https://galaxy.ansible.com/geerlingguy/postgresql) role 
+
+
+`ansible-galaxy install geerlingguy.postgresql`
 
 
 ```text
@@ -214,3 +216,59 @@ frontend1.bcfc.internal    : ok=6    changed=6    unreachable=0    failed=0
 support1.bcfc.internal     : ok=1    changed=1    unreachable=0    failed=0
 ```
 
+If you run playbook again, confirm there is no changed item in execution result.
+
+```text
+PLAY RECAP ***************************************************************************************************************
+app1.bcfc.internal         : ok=9    changed=0    unreachable=0    failed=0
+app2.bcfc.internal         : ok=9    changed=0    unreachable=0    failed=0
+appdb1.bcfc.internal       : ok=20   changed=0    unreachable=0    failed=0
+frontend1.bcfc.internal    : ok=5    changed=0    unreachable=0    failed=0
+support1.bcfc.internal     : ok=1    changed=0    unreachable=0    failed=0
+```
+
+
+### Cleanup
+
+Run `cleanup.yml` to cleanup and ready for you test run.
+
+```text
+$ ansible-playbook -i ../../myinventory.ini cleanup.yml
+
+PLAY [cleanup] ***********************************************************************************************************
+
+TASK [./roles/cleaner : reverse the enabling of sudo without tty for some ansible commands] ******************************
+ok: [app1.bcfc.internal]
+ok: [support1.bcfc.internal]
+ok: [frontend1.bcfc.internal]
+ok: [app2.bcfc.internal]
+ok: [appdb1.bcfc.internal]
+
+TASK [./roles/cleaner : Remove repo file] ********************************************************************************
+changed: [support1.bcfc.internal]
+changed: [frontend1.bcfc.internal]
+changed: [app1.bcfc.internal]
+changed: [appdb1.bcfc.internal]
+changed: [app2.bcfc.internal]
+
+TASK [./roles/cleaner : remove base tools and three tier app packages] ***************************************************
+ok: [support1.bcfc.internal] => (item=[u'httpie', u'python-pip', u'haproxy', u'tomcat', u'postgresql-server'])
+changed: [frontend1.bcfc.internal] => (item=[u'httpie', u'python-pip', u'haproxy', u'tomcat', u'postgresql-server'])
+changed: [app1.bcfc.internal] => (item=[u'httpie', u'python-pip', u'haproxy', u'tomcat', u'postgresql-server'])
+changed: [app2.bcfc.internal] => (item=[u'httpie', u'python-pip', u'haproxy', u'tomcat', u'postgresql-server'])
+changed: [appdb1.bcfc.internal] => (item=[u'httpie', u'python-pip', u'haproxy', u'tomcat', u'postgresql-server'])
+
+TASK [./roles/cleaner : Remove index.html] *******************************************************************************
+ok: [appdb1.bcfc.internal]
+ok: [app2.bcfc.internal]
+ok: [frontend1.bcfc.internal]
+ok: [app1.bcfc.internal]
+ok: [support1.bcfc.internal]
+
+PLAY RECAP ***************************************************************************************************************
+app1.bcfc.internal         : ok=4    changed=2    unreachable=0    failed=0
+app2.bcfc.internal         : ok=4    changed=2    unreachable=0    failed=0
+appdb1.bcfc.internal       : ok=4    changed=2    unreachable=0    failed=0
+frontend1.bcfc.internal    : ok=4    changed=2    unreachable=0    failed=0
+support1.bcfc.internal     : ok=4    changed=1    unreachable=0    failed=0
+```
