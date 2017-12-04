@@ -19,8 +19,9 @@ $ ansible-galaxy install geerlingguy.postgresql
 
 ### 2. edit inventory
 
-Please note ansible variable `GUID="abcd"` is added. And you must replace `abcd` with your own GUID on [opentlc](https://labs.opentlc.com) environment.
+You must replace `bcfc` with your own GUID on [opentlc](https://labs.opentlc.com) environment.
 
+Here is a sample inventory file.
 ```ini
 [3tierapp:vars]
 
@@ -32,8 +33,6 @@ ansible_become=yes
 ansible_ssh_user=ec2-user
 ansible_ssh_private_key_file="~/.ssh/bcfckey.pem"
 ansible_ssh_common_args="-o StrictHostKeyChecking=no"
-
-GUID="bcfc"
 
 [3tierapp:children]
 frontends
