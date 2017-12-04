@@ -1,0 +1,29 @@
+---
+- hosts: all
+  roles:
+    - role: common
+      tags: common
+
+- name: deploy frontend
+  hosts: frontends
+  become: true
+  roles:
+    - role: frontend
+      tags: frontend
+
+- name: deploy app
+  hosts: apps
+  become: true
+  roles:
+    - role: app
+      tags: app
+
+- name: deploy db
+  hosts: appdbs
+  become: true
+  roles:
+#    - role: db
+    - role: geerlingguy.postgresql
+      tags: db
+
+
