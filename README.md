@@ -3,21 +3,8 @@ team1 playbook for ansible advanced training
 
 ## Prepare to run 
 
-### 1. install [geerlingguy.postgresql](https://galaxy.ansible.com/geerlingguy/postgresql) role 
 
-
-`ansible-galaxy install geerlingguy.postgresql`
-
-
-```text
-$ ansible-galaxy install geerlingguy.postgresql
-- downloading role 'postgresql', owned by geerlingguy
-- downloading role from https://github.com/geerlingguy/ansible-role-postgresql/archive/1.3.1.tar.gz
-- extracting geerlingguy.postgresql to /Users/jianfeng/.ansible/roles/geerlingguy.postgresql
-- geerlingguy.postgresql (1.3.1) was installed successfully
-```
-
-### 2. edit inventory
+### 1. edit inventory
 
 You must replace `bcfc` with your own GUID on [opentlc](https://labs.opentlc.com) environment.
 
