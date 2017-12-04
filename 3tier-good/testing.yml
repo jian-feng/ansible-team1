@@ -1,0 +1,29 @@
+- name: testing apps
+  hosts: apps
+  gather_facts: false # speeds up testing
+
+  tasks: 
+  
+  - name: check tomcat
+    uri:
+      url: "http://{{ansible_ssh_host}}:8080/"
+      return_content: true
+    become: false
+    delegate_to: localhost
+    register: webpage
+    failed_when: "'Welcome to Tomcat' not in webpage.content"
+
+- name: testing frontends
+  hosts: frontends
+  gather_facts: false # speeds up testing
+
+  tasks: 
+  
+  - name: check tomcat through HAProxy
+    uri:
+      url: "http://{{ansible_ssh_host}}/"
+      return_content: true
+    become: false
+    delegate_to: localhost
+    register: webpage
+    failed_when: "'Welcome to Tomcat' not in webpage.content"
