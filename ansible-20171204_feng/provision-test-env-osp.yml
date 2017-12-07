@@ -1,0 +1,42 @@
+---
+- name: "******** provision on OpenStack ********"
+  hosts: workstation
+  become: false
+  vars:
+    osp_instances:
+      frontend1:
+        group: "frontends"
+        deployment: "qas"
+      app1:
+        group: "apps"
+        deployment: "qas"
+      app2:
+        group: "apps"
+        deployment: "qas"
+      appdb1:
+        group: "appdbs"
+        deployment: "qas"
+
+  tasks:
+
+    - name: Create network on OSP
+      include_role:
+        name: osp-provision-base
+        private: true
+      tags: 
+        - tested
+        
+    - name: Create instance on OSP
+      include_role:
+        name: osp-provision-instance
+        private: true
+      vars:
+        osp_instance_deployment_name: "{{ item.value.deployment }}"
+        osp_instance_group_name: "{{ item.value.group }}"
+        osp_instance_name: "{{ item.key }}"
+        flavor_name: m2.small
+      with_dict: "{{ osp_instances }}"
+
+    - name: Fetch inventory from OSP
+      include_role:
+        name: osp-fetch-inventory

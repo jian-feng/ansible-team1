@@ -26,4 +26,6 @@
   become_user: "{{ postgresql_user }}"
   # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
   vars:
-    ansible_ssh_pipelining: true
+    # Disable ansible_ssh_pipelining , due to same issue on  
+    # https://github.com/geerlingguy/ansible-role-postgresql/issues/29
+    ansible_ssh_pipelining: false

@@ -1,0 +1,37 @@
+- name: deploy ansible tower
+  hosts: bastion.19b8.internal
+  become: true
+  gather_facts: false
+  vars: 
+    GUID: "19b8"
+
+  tasks: 
+
+  - name: download setup file
+    unarchive:   
+      src: "https://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-latest.tar.gz"
+      dest: "/root/"
+      remote_src: true
+  
+  - name: Find directory where untared
+    find:
+      paths: "/root/"
+      patterns: "ansible-tower-setup*"
+      file_type: directory
+      use_regex: no
+      recurse: no
+    register: find_result
+  
+  - name: extract directory name as variable
+    set_fact:
+      ansible_tower_setup_path: "{{ find_result.files[0].path }}"
+  
+  - name: Setup ansible-tower-setup-inventory
+    template:
+      dest: "{{ ansible_tower_setup_path }}/inventory"
+      src: "template/inventory.j2"
+  
+  - name: Execute setup.sh
+    shell: "{{ ansible_tower_setup_path }}/setup.sh"
+    register: setup_result
+    # failed_when: "{{'The setup process completed successfully.' not in  setup_result.stdout }}"

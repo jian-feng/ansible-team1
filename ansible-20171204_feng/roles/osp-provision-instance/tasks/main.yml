@@ -1,0 +1,49 @@
+---
+# tasks file for osp-provision-instance
+
+# In this section, you will provision instances.
+# As per organization’s security policy you will be injecting two separate Public keys.
+# - openstack.pub for local workstation or Ansible Tower access through JumpHost
+# - ansible_ssh for user access from your local workstation.
+
+- name: Create server instance {{ osp_instance_name }}
+  os_server:
+    cloud: ospcloud
+    name: "{{ osp_instance_name }}"
+    image: rhel-guest
+    meta: "group={{ osp_instance_group_name }},deployment_name={{ osp_instance_deployment_name }}"
+    flavor: "{{ flavor_name }}"
+    security_groups: ICMP_and_SSH
+    key_name: ansible_ssh
+    nics:
+    - net-name: int_network
+    userdata: |
+      #!/bin/bash
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+      curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+      cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
+  register: serverip
+      
+- name: Add floating IP to {{ osp_instance_name }}
+  os_floating_ip:
+    cloud: ospcloud
+    state: present
+    reuse: true
+    server: "{{ osp_instance_name }}"
+    network: ext_network
+    wait: true
+    timeout: 180
+  register: floatingip
+
+- name: Wait for "{{ osp_instance_name }} {{ floatingip.floating_ip.floating_ip_address }}" to be available
+  wait_for:
+    host: "{{ floatingip.floating_ip.floating_ip_address }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: 600
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Print IP Address
+  debug:
+    msg: "{{ osp_instance_deployment_name }} {{ osp_instance_group_name }} {{ osp_instance_name }}: {{floatingip.floating_ip.fixed_ip_address}} {{floatingip.floating_ip.floating_ip_address}}"

@@ -1,0 +1,40 @@
+---
+- name: "******** Fetch inventory from OSP ********"
+  hosts: workstation
+  gather_facts: false
+  become: false
+  roles: 
+    - osp-fetch-inventory
+
+  tasks:
+    - name: Print result
+      debug:
+        msg: "{{ groups['all'] }}"
+
+
+
+- name: "******** Deploy frontends tier ********"
+  hosts: frontends
+  become: true
+  gather_facts: true
+  roles: 
+    - 3tier-base-conf
+    - 3tier-haproxy
+
+
+- name: "******** Deploy apps tier ********"
+  hosts: apps
+  become: true
+  gather_facts: true
+  roles: 
+    - 3tier-base-conf
+    - 3tier-tomcat
+
+
+- name: "******** Deploy appdbs tier ********"
+  hosts: appdbs
+  become: true
+  gather_facts: true
+  roles: 
+    - 3tier-base-conf
+    - geerlingguy.postgresql

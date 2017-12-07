@@ -1,0 +1,132 @@
+---
+# tasks file for ops-provision
+# In this section, you will create a playbook to provision network infrastructure needed to deploy your application in OpenStack Environment.
+
+############################
+# Create Network infrastructure
+############################
+- os_network:
+    cloud: ospcloud
+    state: present
+    name: ext_network
+    external: true
+
+- os_subnet:
+    cloud: ospcloud
+    state: present
+    network_name: ext_network
+    name: external_subnet
+    cidr: 10.10.10.0/24
+    dns_nameservers:
+       - 8.8.8.7
+       - 8.8.8.8
+    host_routes:
+       - destination: 0.0.0.0/0
+         nexthop: 10.10.10.0
+       - destination: 192.168.0.0/24
+         nexthop: 192.168.0.0
+
+- os_network:
+    cloud: ospcloud
+    state: present
+    name: int_network
+    external: false
+  register: internal
+
+- os_subnet:
+    cloud: ospcloud
+    state: present
+    network_name: int_network
+    name: int_subnet
+    cidr: 20.20.20.0/24
+    dns_nameservers:
+       - 8.8.8.7
+       - 8.8.8.8
+    host_routes:
+       - destination: 0.0.0.0/0
+         nexthop: 192.168.0.0
+       - destination: 192.168.0.0/24
+         nexthop: 192.168.0.0
+
+- os_router:
+    cloud: ospcloud
+    state: present
+    name: router1
+    network: ext_network
+    external_fixed_ips:
+      - subnet: external_subnet
+    interfaces:
+      - int_subnet
+
+#######################################
+# Create Security groups and Key-Pairs
+#######################################
+- os_security_group:
+    cloud: ospcloud
+    state: present
+    name: ICMP_and_SSH
+    description: ICMP and SSH enabled
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: ICMP_and_SSH
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: ICMP_and_SSH
+    protocol: tcp
+    port_range_min: 80
+    port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: ICMP_and_SSH
+    protocol: icmp
+    remote_ip_prefix: 0.0.0.0/0
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: ICMP_and_SSH
+    protocol: tcp
+    port_range_min: 8080
+    port_range_max: 8080
+    remote_ip_prefix: 0.0.0.0/0
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: ICMP_and_SSH
+    protocol: tcp
+    port_range_min: 5432
+    port_range_max: 5432
+    remote_ip_prefix: 0.0.0.0/0
+
+- name: Generate key files
+  user:
+    name: "{{ ansible_env.USER }}"
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/test_id_rsa
+
+- os_keypair:
+    cloud: ospcloud
+    state: present
+    name: ansible_ssh
+    public_key_file: "{{ ansible_env.HOME }}/.ssh/test_id_rsa.pub"
+  ignore_errors: true
+
+############################
+# create custom flavor on osp
+############################
+- name: Create m2.small flavor
+  os_nova_flavor:
+   cloud: ospcloud
+   state: present
+   name: m2.small
+   ram: 2048
+   vcpus: 1
+   disk: 10
+

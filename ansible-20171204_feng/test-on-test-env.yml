@@ -1,0 +1,22 @@
+- name: "******** testing apps and frontends ********"
+  hosts: workstation
+  become: false
+  gather_facts: false # speeds up testing
+
+  tasks: 
+
+  - name: Check http request by accessing apps
+    uri:
+      url: "http://{{item}}:8080/"
+      return_content: true
+    register: webpage
+    with_items: "{{ groups['apps'] }}"
+    failed_when: "'Welcome to Tomcat' not in webpage.content"
+
+  - name: Check http request by accessing frontends
+    uri:
+      url: "http://{{item}}/"
+      return_content: true
+    register: webpage
+    with_items: "{{ groups['frontends'] }}"
+    failed_when: "'Welcome to Tomcat' not in webpage.content"

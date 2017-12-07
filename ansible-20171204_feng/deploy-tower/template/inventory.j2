@@ -1,0 +1,27 @@
+[tower]
+tower1.{{ GUID }}.internal
+tower2.{{ GUID }}.internal
+tower3.{{ GUID }}.internal
+
+[database]
+support1.{{ GUID }}.internal
+
+[all:vars]
+ansible_become=true
+admin_password='r3dh4t1!'
+
+pg_host='support1.{{ GUID }}.internal'
+pg_port='5432'
+
+pg_database='awx'
+pg_username='awx'
+pg_password='r3dh4t1!'
+
+rabbitmq_port=5672
+rabbitmq_vhost=tower
+
+rabbitmq_username=tower
+rabbitmq_password='r3dh4t1!'
+rabbitmq_cookie=cookiemonster
+
+rabbitmq_use_long_name=true
