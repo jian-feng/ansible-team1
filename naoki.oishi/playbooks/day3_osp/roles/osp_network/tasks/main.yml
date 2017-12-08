@@ -1,0 +1,16 @@
+- os_network:
+    cloud: ospcloud
+    state: present
+    name: "{{ item.name }}"
+    external: "{{ item.external }}"
+  with_items: "{{ networks }}"
+
+- os_subnet:
+    cloud: ospcloud
+    state: present
+    network_name: "{{ item.network_name }}"
+    name: "{{ item.name }}"
+    cidr: "{{ item.cidr }}"
+    dns_nameservers: "{{ item.dns_nameservers }}"
+    host_routes: "{{ item.host_routers }}"
+  with_items: "{{ subnets }}"

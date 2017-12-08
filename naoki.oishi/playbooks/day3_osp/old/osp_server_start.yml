@@ -1,0 +1,12 @@
+- hosts: jumpbox
+  vars:
+    server_name: web1
+  tasks:
+   - name: start server
+     os_server_action:
+       cloud: ospcloud
+       action: start
+       server: "{{ item }}"
+       timeout: 200
+     with_items: "{{ server_name }}"
+ 

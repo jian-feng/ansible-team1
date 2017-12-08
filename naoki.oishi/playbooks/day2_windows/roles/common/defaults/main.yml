@@ -1,0 +1,22 @@
+common_yumrepo:
+ - name: rhel-7-server-rpms
+   description: Red Hat Enterprise Linux 7
+   baseurl: http://admin.na.shared.opentlc.com/repos/ocp/3.6//rhel-7-server-rpms
+   gpgcheck: 0
+ - name: rhel-7-server-rh-common-rpms
+   description: Red Hat Enterprise Linux 7 Common
+   baseurl: http://admin.na.shared.opentlc.com/repos/ocp/3.6//rhel-7-server-rh-common-rpms
+   gpgcheck: 0
+ - name: rhel-7-server-extras-rpms
+   description: Red Hat Enterprise Linux 7 Extras
+   baseurl: http://admin.na.shared.opentlc.com/repos/ocp/3.6//rhel-7-server-extras-rpms
+   gpgcheck: 0
+ - name: rhel-7-server-optional-rpms
+   description: Red Hat Enterprise Linux 7 Optional
+   baseurl: http://admin.na.shared.opentlc.com/repos/ocp/3.6//rhel-7-server-optional-rpms
+   gpgcheck: 0
+ - name: epel
+   description: Extra Packages for Enterprise Linux 7 - $basearch
+   baseurl: http://download.fedoraproject.org/pub/epel/7/$basearch
+   gpgcheck: 0
+ 
