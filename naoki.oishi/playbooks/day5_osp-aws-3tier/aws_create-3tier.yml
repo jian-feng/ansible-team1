@@ -1,0 +1,32 @@
+---
+
+- name: deploy frontend
+  hosts: tag_AnsibleGroup_frontends
+  become: true
+  vars:
+  roles:
+    - role: common
+      tags: common
+    - role: aws_frontend
+      tags: aws_frontend
+
+- name: deploy app
+  hosts: tag_AnsibleGroup_apps
+  become: true
+  roles:
+    - role: common
+      tags: common
+    - role: app
+      tags: app
+
+- name: deploy db
+  hosts: tag_AnsibleGroup_appdbs
+  become: true
+  roles:
+#    - role: db
+    - role: common
+      tags: common
+    - role: geerlingguy.postgresql
+      tags: db
+
+

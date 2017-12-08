@@ -1,0 +1,38 @@
+networks:
+ - name: ext_network
+   external: true
+ - name: int_network
+   external: false
+
+subnets:
+ - name: external_subnet
+   network_name: ext_network
+   cidr: '10.10.10.0/24'
+   dns_nameservers:
+    - 8.8.8.7
+    - 8.8.8.8
+   host_routes:
+    - destination: '0.0.0.0/0'
+      nexthop: '10.10.10.0'
+    - destination: '192.168.0.0/24'
+      nexthop: 192.168.0.0
+ - name: int_subnet
+   network_name: int_network
+   cidr: '20.20.20.0/24'
+   dns_nameservers:
+    - 8.8.8.7
+    - 8.8.8.8
+   host_routes:
+    - destination: '0.0.0.0/0'
+      nexthop: 192.168.0.0
+    - destination: '192.168.0.0/24'
+      nexthop: 192.168.0.0
+
+router:
+ - name: router1
+   network: ext_network
+   external_fixed_ips:
+    - subnet: external_subnet
+   interfaces:
+    - int_subnet
+

@@ -1,0 +1,35 @@
+---
+- name: delete osp server
+  hosts: jumpbox
+  tasks:
+   - name: delete frontend1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: frontend1.yml
+       tasks_from: delete.yml 
+     tags: osp_instance_delete
+     
+   - name: delete app1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: app1.yml
+       tasks_from: delete.yml
+     tags: osp_instance_delete
+     
+   - name: delete app2 instance
+     include_role: 
+       name: osp_instance
+       vars_from: app2.yml
+       tasks_from: delete.yml
+     tags: osp_instance_delete
+     
+   - name: delete appdb1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: appdb1.yml
+       tasks_from: delete.yml
+     tags: osp_instance_delete
+
+
+
+

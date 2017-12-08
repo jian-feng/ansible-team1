@@ -1,0 +1,28 @@
+- os_security_group:
+    cloud: ospcloud
+    state: present
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+  with_items: "{{ security_groups }}"
+
+- os_security_group_rule:
+    cloud: ospcloud
+    security_group: "{{ item.security_group }}"
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port_range_min }}" 
+    port_range_max:  "{{ item.port_range_max }}"
+    remote_ip_prefix:  "{{ item.remote_ip_prefix }}"
+  with_items: "{{ security_group_rules }}"
+
+- name: Generate key files
+  user:
+    name: "{{ ansible_env.USER }}"
+    generate_ssh_key: yes
+    ssh_key_file: ".ssh/{{ ssh_keyfile }}"
+
+- os_keypair:
+    cloud: ospcloud
+    state: present
+    name: "{{ ssh_keyname }}"
+    public_key_file: "{{ ansible_env.HOME }}/.ssh/{{ ssh_keyfile }}.pub"
+
