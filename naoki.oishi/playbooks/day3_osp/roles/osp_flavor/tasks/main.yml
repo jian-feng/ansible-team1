@@ -1,0 +1,10 @@
+- name: create custom flavor
+  os_nova_flavor:
+   cloud: ospcloud
+   state: present
+   name: "{{ item.name }}"
+   ram: "{{ item.ram }}"
+   vcpus: "{{ item.vcpus }}"
+   disk: "{{ item.disk }}"
+  with_items: "{{ custom_flavors }}"
+

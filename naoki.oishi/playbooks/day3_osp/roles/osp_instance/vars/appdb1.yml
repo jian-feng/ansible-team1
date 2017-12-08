@@ -1,0 +1,12 @@
+server_name: appdb1
+image: rhel-guest
+meta_server_group: appdbs
+meta_deployment: dev
+flavor: m2.small
+security_groups:
+ - ICMP_and_SSH
+ - POSTGRES
+ssh_keyname: ansible_ssh
+network_name: int_network
+floating_network: ext_network
+

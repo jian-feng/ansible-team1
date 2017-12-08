@@ -1,0 +1,10 @@
+server_name: web1
+image: rhel-guest
+meta_server_group: webservers
+meta_deployment: dev
+flavor: m2.small
+security_groups: ICMP_and_SSH
+ssh_keyname: ansible_ssh
+network_name: int_network
+floating_network: ext_network
+
