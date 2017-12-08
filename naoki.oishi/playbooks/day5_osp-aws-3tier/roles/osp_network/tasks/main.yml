@@ -1,0 +1,26 @@
+- os_network:
+    cloud: ospcloud
+    state: present
+    name: "{{ item.name }}"
+    external: "{{ item.external }}"
+  with_items: "{{ networks }}"
+
+- os_subnet:
+    cloud: ospcloud
+    state: present
+    network_name: "{{ item.network_name }}"
+    name: "{{ item.name }}"
+    cidr: "{{ item.cidr }}"
+    dns_nameservers: "{{ item.dns_nameservers }}"
+    host_routes: "{{ item.host_routes }}"
+  with_items: "{{ subnets }}"
+
+- os_router:
+    cloud: ospcloud
+    state: present
+    name: "{{ item.name }}"
+    network: "{{ item.network }}"
+    external_fixed_ips: "{{ item.external_fixed_ips }}"
+    interfaces: "{{ item.interfaces }}"
+  with_items: "{{ router }}"
+

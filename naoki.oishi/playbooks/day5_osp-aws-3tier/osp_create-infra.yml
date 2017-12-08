@@ -1,0 +1,46 @@
+---
+- name: create osp site
+  hosts: jumpbox
+  tasks:
+   - name: create network
+     include_role:
+       name: osp_network
+     tags: osp_network
+
+   - name: create security group and key file
+     include_role: 
+       name: osp_security
+     tags: osp_security
+
+   - name: create custom flavor
+     include_role: 
+       name: osp_flavor
+     tags: osp_flavor
+
+   - name: create frontend1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: frontend1.yml
+     tags: osp_instance
+     
+   - name: create app1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: app1.yml
+     tags: osp_instance
+     
+   - name: create app2 instance
+     include_role: 
+       name: osp_instance
+       vars_from: app2.yml
+     tags: osp_instance
+     
+   - name: create appdb1 instance
+     include_role: 
+       name: osp_instance
+       vars_from: appdb1.yml
+     tags: osp_instance
+
+
+
+

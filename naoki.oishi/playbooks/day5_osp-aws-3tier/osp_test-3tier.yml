@@ -1,0 +1,35 @@
+- hosts: jumpbox
+  gather_facts: false
+  tasks:
+   - name: Fetch Instance Info
+     os_server_facts:
+      cloud: ospcloud
+      region_name: RegionOne
+     register: result
+     tags: always
+   - name: Add host to
+     add_host:
+      name: "{{ item.public_v4 }}"
+      group: "{{ item.metadata.group }}"
+     with_items: "{{result.ansible_facts.openstack_servers}}"
+     tags: always
+   - name: Add host
+     add_host:
+      name: "{{ item.public_v4 }}"
+      group: "{{ item.metadata.deployment_name }}"
+     with_items: "{{result.ansible_facts.openstack_servers}}"
+     tags: always
+
+- name: check OSP frontends
+  hosts: frontends
+  gather_facts: false
+  tasks:
+   - uri:
+       url: http://localhost/ansible
+       return_content: yes
+     delegate_to: "{{ inventory_hostname }}"
+     register: register_web
+
+   - name: fail if "Ansible has done its job" is not in the page
+     fail:
+     when: "'Ansible has done its job' not in register_web.content"

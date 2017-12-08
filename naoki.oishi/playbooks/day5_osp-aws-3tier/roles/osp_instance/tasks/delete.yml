@@ -1,0 +1,7 @@
+- name: Delete a server instance
+  os_server:
+    cloud: ospcloud
+    name: "{{ server_name }}"
+    image: "{{ image }}"
+    state: absent
+
